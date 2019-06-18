@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import rp from "request-promise";
+import cheerio from "cheerio";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = { quotes: [] };
+
+  componentDidMount() {
+    rp("https://cors-anywhere.herokuapp.com/http://www.eduro.com/")
+      .then(html => {
+        let quotes = [];
+        // console.log(html);
+        let $ = cheerio.load(html);
+        $("dailyquote div p").each(function(i, element) {
+          let a = $(this)
+            .prev()
+            .text();
+          if (a !== "") {
+            quotes.push(a);
+          }
+        });
+
+        this.setState({ quotes });
+      })
+      .catch(function(err) {
+        console.log("crawl failed");
+      });
+  }
+
+  render() {
+    const { quotes } = this.state;
+    return (
+      <div>
+        <h1>Quotes</h1>
+        <ul>
+          {quotes.map(quote => {
+            return (
+              <li key={quote}>
+                <p>{quote}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
 }
 
 export default App;
