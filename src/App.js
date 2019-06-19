@@ -46,10 +46,10 @@ class App extends Component {
     }
 
     return (
-      <div>
-        <h1>Quotes</h1>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <h1 style={{ textAlign: "center" }}>Quotes</h1>
         <br />
-        <ul>
+        <ul style={{ margin: "auto" }}>
           {authorQuotes.map(authorQuote => {
             return (
               <li key={authorQuote.quote}>
